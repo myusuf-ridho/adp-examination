@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>ADP Quiz – Latihan Soal dari PDF</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--text:#1b2330;--muted:#64707f;--line:#dfe4ee;--primary:#1a73e8;--primary-bg:#e8f0fe;--ok:#1e8e3e;--ok-bg:#e6f4ea;--bad:#d93025;--bad-bg:#fce8e6;--warn:#e37400;--warn-bg:#fef3e0;--shadow:0 1px 3px rgba(20,30,50,.08),0 4px 16px rgba(20,30,50,.05);--s1:#1a73e8;--s2:#188038;--s3:#e37400;--s4:#9334e6}
+[data-theme=dark]{--bg:#0f141b;--card:#171e28;--text:#e6ebf2;--muted:#93a0b2;--line:#2a3442;--primary:#6ea8fe;--primary-bg:#1b2b45;--ok:#5bd48a;--ok-bg:#12301f;--bad:#ff8a80;--bad-bg:#3a1b1b;--warn:#ffb74d;--warn-bg:#3b2a10;--shadow:0 1px 3px rgba(0,0,0,.4);--s1:#6ea8fe;--s2:#5bd48a;--s3:#ffb74d;--s4:#c58af9}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:30;height:56px;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--card);border-bottom:1px solid var(--line)}
+.brand{font-weight:700;white-space:nowrap}.brand .sub{font-weight:400;color:var(--muted)}
+.quizbar{display:flex;align-items:center;gap:10px;margin-left:auto;min-width:0}
+.progwrap{display:flex;align-items:center;gap:8px;min-width:0}
+.prog{width:140px;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--primary);transition:width .25s}
+#progTxt{font-size:13px;color:var(--muted);white-space:nowrap}
+.pill{padding:3px 10px;border-radius:99px;background:var(--primary-bg);color:var(--primary);font-size:13px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:4px 10px;font-size:13px}
+.seg button.on{background:var(--primary);color:#fff}
+.btn{border:1px solid var(--line);background:var(--card);padding:8px 16px;border-radius:10px;font-weight:600}
+.btn:hover{border-color:var(--primary)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+[data-theme=dark] .btn.primary{color:#0b1220}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.icon{border:1px solid var(--line);background:var(--card);border-radius:10px;width:38px;height:36px;font-size:17px}
+.center{max-width:760px;margin:0 auto;padding:32px 16px 64px}
+.hero h1{margin:0 0 6px;font-size:28px}.hero p{margin:0 0 20px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.drop{display:flex;flex-direction:column;align-items:center;gap:4px;padding:40px 16px;border:2px dashed var(--line);border-radius:16px;background:var(--card);cursor:pointer;text-align:center;color:var(--muted);margin-bottom:16px}
+.drop:hover,.drop.over{border-color:var(--primary);background:var(--primary-bg)}
+.drop .big{font-size:40px}.drop b{color:var(--text)}
+.msg{padding:12px 16px;border-radius:12px;background:var(--primary-bg);color:var(--primary);margin-bottom:16px}
+.msg.err{background:var(--bad-bg);color:var(--bad)}
+.msg.warn{background:var(--warn-bg);color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{padding:3px 10px;border-radius:99px;border:1px solid var(--line);font-size:13px}
+.opts-row{display:grid;gap:10px;margin:14px 0}
+.choice{display:flex;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.choice:has(input:checked){border-color:var(--primary);background:var(--primary-bg)}
+.choice small{display:block;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+details{margin-top:10px;color:var(--muted)}details textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px}
+.app{display:grid;grid-template-columns:310px 1fr;min-height:calc(100vh - 56px)}
+aside{position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;background:var(--card);border-right:1px solid var(--line);padding:16px}
+aside h3{margin:0 0 8px;font-size:15px}
+.stats{display:flex;gap:6px;flex-wrap:wrap;font-size:12.5px;margin-bottom:10px}
+.stats span{padding:2px 8px;border-radius:99px;background:var(--bg);border:1px solid var(--line)}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.filters button{border:1px solid var(--line);background:transparent;border-radius:8px;padding:3px 9px;font-size:12.5px}
+.filters button.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+[data-theme=dark] .filters button.on{color:#0b1220}
+.gh{display:flex;align-items:center;gap:8px;margin:14px 0 6px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.gh small{margin-left:auto;font-weight:500}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}.dot.s1{background:var(--s1)}.dot.s2{background:var(--s2)}.dot.s3{background:var(--s3)}.dot.s4{background:var(--s4)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px}
+.nb{position:relative;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--bg);font-weight:600;font-size:13px}
+.nb.ans{background:var(--primary-bg);color:var(--primary);border-color:var(--primary)}
+.nb.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.nb.bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.nb.cur{outline:2px solid var(--text);outline-offset:1px}
+.nb.fl::after{content:"";position:absolute;top:3px;right:3px;width:8px;height:8px;border-radius:50%;background:var(--warn)}
+.legend{margin-top:16px;font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;border:1px solid var(--line);vertical-align:-1px}
+main.q{padding:24px;max-width:900px;width:100%;margin:0 auto}
+.qhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;color:var(--muted);font-size:13px}
+.qhead b{color:var(--text);font-size:17px}
+.tag{padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;background:var(--warn-bg);color:var(--warn)}
+.stem{font-size:16.5px;margin:6px 0 14px}
+.stem2{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 14px;color:var(--muted);margin:-4px 0 14px;font-size:14.5px}
+.opt{display:flex;gap:12px;width:100%;text-align:left;padding:12px 14px;margin-bottom:10px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);align-items:flex-start}
+.opt:hover:not(:disabled){border-color:var(--primary)}
+.opt .k{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;background:var(--bg);border:1px solid var(--line)}
+.opt.sel{border-color:var(--primary);background:var(--primary-bg)}.opt.sel .k{background:var(--primary);color:#fff;border-color:var(--primary)}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}.opt.right .k{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}.opt.wrong .k{background:var(--bad);color:#fff;border-color:var(--bad)}
+.opt.missed{border-style:dashed}
+.opt:disabled{cursor:default;color:inherit}
+.opt .t2{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;word-break:break-word}
+.banner{padding:10px 14px;border-radius:12px;font-weight:700;margin:6px 0 10px}
+.banner.ok{background:var(--ok-bg);color:var(--ok)}.banner.bad{background:var(--bad-bg);color:var(--bad)}
+.why{padding:10px 14px;border-radius:12px;margin-bottom:8px;font-size:14.5px;border:1px solid var(--line);background:var(--card)}
+.why.ok{border-color:var(--ok);background:var(--ok-bg)}.why.bad.picked{border-color:var(--bad);background:var(--bad-bg)}
+.nav{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}.nav .sp{flex:1}
+.ring{width:170px;height:170px;position:relative;margin:0 auto}
+.ring svg{transform:rotate(-90deg)}.ring .num{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-size:34px;font-weight:800}
+.ring .num small{display:block;font-size:13px;font-weight:500;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:18px 0}
+.kpi{text-align:center;padding:12px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}.kpi b{display:block;font-size:22px}.kpi span{font-size:12.5px;color:var(--muted)}
+.dom{margin:12px 0}.dom .l{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--text);max-width:440px;padding:20px}dialog::backdrop{background:rgba(0,0,0,.5)}
+.app.collapsed{grid-template-columns:1fr}
+.app.collapsed aside{display:none}
+.scrim{display:none}
+.only-mobile{display:none}
+@media(max-width:900px){
+ .app{grid-template-columns:1fr}
+ aside{position:fixed;left:0;top:56px;bottom:0;height:auto;width:min(86vw,330px);transform:translateX(-102%);transition:transform .2s;z-index:25}
+ .app.collapsed aside{display:block}
+ aside.open{transform:none}
+ .scrim.show{display:block;position:fixed;inset:56px 0 0 0;background:rgba(0,0,0,.4);z-index:20}
+ .only-mobile{display:inline-block}
+ .prog,.brand .sub{display:none}
+ main.q{padding:16px}
+}
+@media(max-width:560px){#liveScore{display:none}.top{gap:6px;padding:0 8px}.btn{padding:7px 10px}}
+.lib{display:grid;gap:8px;margin-top:12px}
+.libit{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.libit:hover{border-color:var(--primary);background:var(--primary-bg)}
+.libit .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.libit .go{color:var(--primary);font-size:13px;font-weight:600;white-space:nowrap}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="icon" id="menuBtn" hidden aria-label="Tampilkan/sembunyikan daftar nomor" title="Tampilkan/sembunyikan daftar nomor">☰</button>
+  <div class="brand">🎯 ADP Quiz<span class="sub"> · Associate Data Practitioner</span></div>
+  <div class="quizbar" id="quizBar" hidden>
+    <div class="progwrap"><div class="prog"><i id="prog"></i></div><span id="progTxt"></span></div>
+    <span class="pill" id="timer">00:00</span>
+    <span class="pill ok" id="liveScore" hidden></span>
+    <div class="seg" id="langSeg"></div>
+    <button class="btn primary" id="submitBtn">Kumpulkan</button>
+  </div>
+  <button class="icon" id="themeBtn" title="Mode gelap / terang" style="margin-left:auto">🌙</button>
+</header>
+
+<!-- START -->
+<section id="sStart" class="center">
+  <div class="hero">
+    <h1>Latihan Soal dari PDF</h1>
+    <p>Pilih PDF soal dari folder yang sama dengan file ini, atau upload manual (format buku latihan ADP). Soal, pilihan, kunci, dan pembahasan dibaca otomatis jadi kuis interaktif. Semua diproses di browser-mu, file tidak dikirim ke server mana pun.</p>
+  </div>
+  <div id="resume" class="card" hidden></div>
+  <div id="lib" class="card" hidden></div>
+  <input type="file" id="dirIn" webkitdirectory hidden>
+  <label id="drop" class="drop" tabindex="0">
+    <input type="file" id="file" accept="application/pdf,.pdf" hidden>
+    <div class="big">📄</div><b>Tarik &amp; lepas PDF di sini</b><span>atau klik untuk memilih file</span>
+  </label>
+  <div id="parseMsg" class="msg" hidden></div>
+  <div id="cfg" class="card" hidden></div>
+</section>
+
+<!-- QUIZ -->
+<div id="sQuiz" class="app" hidden>
+  <aside id="side"></aside>
+  <div class="scrim" id="scrim"></div>
+  <main class="q" id="main"></main>
+</div>
+
+<!-- RESULT -->
+<section id="sResult" class="center" hidden></section>
+
+<dialog id="dlg">
+  <div id="dlgBody"></div>
+  <div class="row" style="justify-content:flex-end;margin-top:16px">
+    <button class="btn ghost" id="dlgCancel">Kembali</button>
+    <button class="btn primary" id="dlgOk">OK</button>
+  </div>
+</dialog>
+
+<script src="soal-data.js"></script>
+<script>
+/*PARSER_START*/
+function norm(s){return s.replace(/\s+/g,'').toUpperCase()}
+function joinW(a,b){
+  if(!a)return b; if(!b)return a;
+  if(/[\/\-_(]$/.test(a)||/^[\/.,;:)]/.test(b))return a+b;
+  return a+' '+b;
+}
+// items: [{s,x,y,w}] dari satu halaman -> array baris teks
+function groupItems(items){
+  items=items.filter(i=>i.s.trim()!=='').slice().sort((a,b)=>b.y-a.y||a.x-b.x);
+  const rows=[];
+  for(const it of items){
+    const r=rows[rows.length-1];
+    if(r&&Math.abs(r.y-it.y)<=3)r.items.push(it); else rows.push({y:it.y,items:[it]});
+  }
+  return rows.map(r=>{
+    r.items.sort((a,b)=>a.x-b.x);
+    let t='',end=null;
+    for(const it of r.items){
+      if(end!==null&&it.x-end>1.2&&!/\s$/.test(t)&&!/^\s/.test(it.s))t+=' ';
+      t+=it.s;end=it.x+it.w;
+    }
+    return t.replace(/\s+/g,' ').trim();
+  }).filter(Boolean);
+}
+function parseQA(lines){
+  const stem=[],opts={};let k=null;
+  for(const s of lines){
+    const m=s.match(/^([A-E])\.(?:\s+(.*))?$/);
+    if(m){k=m[1];opts[k]=m[2]||'';continue;}
+    if(k)opts[k]=joinW(opts[k],s);else stem.push(s);
+  }
+  return{stem:stem.reduce((a,b)=>joinW(a,b),''),opts};
+}
+function parseLines(lines){
+  const blocks=[],tail=[],warnings=[];let cur=null,lastN=0,inTail=false;
+  for(const s of lines){
+    if(inTail){tail.push(s);continue;}
+    if(/^ringkasan\s*kunci\s*jawaban/i.test(s)&&blocks.length){inTail=true;continue;}
+    const h=s.match(/^Soal\s*(\d{1,3})\b(.*)$/i);
+    if(h&&+h[1]>lastN){
+      lastN=+h[1];
+      const sm=h[2].match(/Section\s*(\d)\s*·\s*(.+)$/i);
+      cur={n:lastN,sec:sm?+sm[1]:null,secName:sm?sm[2].trim():'',lines:[]};
+      blocks.push(cur);continue;
+    }
+    if(!cur)continue;
+    const sm=s.match(/^Section\s*(\d)\s*·\s*(.+)$/i);
+    if(sm){if(!cur.sec){cur.sec=+sm[1];cur.secName=sm[2].trim();}continue;}
+    if(/^halaman\s*\d+\s*\/\s*\d+/i.test(s)||norm(s).startsWith('LATIHANSOALADP'))continue;
+    cur.lines.push(s);
+  }
+  const tailKey={};
+  for(const s of tail){
+    const m=s.match(/^(\d{1,3})\s+(.+?)\s+([A-E](?:\s*,\s*[A-E])*)(?:\s*\(.*\))?$/);
+    if(m)tailKey[+m[1]]=m[3].match(/[A-E]/g);
+  }
+  const questions=[];let lastSec=1,lastSecName='';
+  for(const b of blocks){
+    if(!b.sec){b.sec=lastSec;b.secName=lastSecName;} else {lastSec=b.sec;lastSecName=b.secName;}
+    const L=b.lines;
+    const iEn=L.findIndex(s=>norm(s)==='ENGLISH');
+    const iId=L.findIndex(s=>norm(s)==='BAHASAINDONESIA');
+    let iAns=L.findIndex(s=>/Jawaban\s*benar\s*:/i.test(s));
+    let answer=[];
+    if(iAns>=0){const m=L[iAns].match(/Jawaban\s*benar\s*:\s*(.*)$/i);answer=(m&&m[1].match(/[A-E]/g))||[];}
+    else iAns=L.length;
+    if(!answer.length&&tailKey[b.n])answer=tailKey[b.n];
+    const enLines=L.slice(iEn>=0?iEn+1:0,iId>=0?iId:iAns);
+    const idLines=iId>=0?L.slice(iId+1,iAns):[];
+    const en=parseQA(enLines),id=idLines.length?parseQA(idLines):null;
+    const ex={correct:'',wrong:{}};let mode=null;
+    for(const s of L.slice(iAns+1)){
+      let m;
+      if((m=s.match(/^Kenapa\s*benar\s*:\s*(.*)$/i))){mode='C';ex.correct=m[1];}
+      else if((m=s.match(/^([A-E])\s+salah\s*:\s*(.*)$/i))){mode=m[1];ex.wrong[m[1]]=m[2];}
+      else if(mode==='C')ex.correct=joinW(ex.correct,s);
+      else if(mode)ex.wrong[mode]=joinW(ex.wrong[mode],s);
+    }
+    const letters=Object.keys(en.opts);
+    if(letters.length<2){warnings.push(`Soal ${b.n}: pilihan jawaban tidak terbaca, dilewati.`);continue;}
+    if(!answer.length){warnings.push(`Soal ${b.n}: kunci jawaban tidak ditemukan, dilewati.`);continue;}
+    answer=[...new Set(answer)].sort();
+    questions.push({n:b.n,sec:b.sec,secName:b.secName,en,id:id&&Object.keys(id.opts).length>=2?id:null,answer,ex});
+  }
+  return{questions,warnings};
+}
+/*PARSER_END*/
+
+/* ====== UI ====== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const KEY='adp_quiz_session_v1';
+let Q=[],S=null,pending=null,screen='start',dlgCb=null;
+
+function fmtTime(t){const h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return(h?h+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({Q,S}))}catch(e){}}
+function loadSaved(){try{const j=JSON.parse(localStorage.getItem(KEY)||'null');return j&&j.Q&&j.S?j:null}catch(e){return null}}
+function clearSaved(){try{localStorage.removeItem(KEY)}catch(e){}}
+
+/* theme */
+function setTheme(t){document.documentElement.dataset.theme=t;$('#themeBtn').textContent=t==='dark'?'☀️':'🌙';try{localStorage.setItem('adp_theme',t)}catch(e){}}
+(function(){let t=null;try{t=localStorage.getItem('adp_theme')}catch(e){}
+ if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';setTheme(t)})();
+$('#themeBtn').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+
+/* screens */
+function show(name){
+  screen=name;
+  $('#sStart').hidden=name!=='start';$('#sQuiz').hidden=name!=='quiz';$('#sResult').hidden=name!=='result';
+  $('#quizBar').hidden=name!=='quiz';$('#menuBtn').hidden=name!=='quiz';
+  window.scrollTo(0,0);
+}
+
+/* ---------- PDF ---------- */
+function setMsg(t,cls){const m=$('#parseMsg');m.hidden=!t;m.className='msg '+(cls||'');m.innerHTML=t||''}
+async function extractLines(file){
+  if(typeof pdfjsLib==='undefined')throw new Error('Library pdf.js gagal dimuat. Pastikan kamu online (CDN cdnjs.cloudflare.com), lalu muat ulang halaman.');
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+  const lines=[];
+  for(let p=1;p<=pdf.numPages;p++){
+    setMsg(`⏳ Membaca halaman ${p}/${pdf.numPages}…`);
+    const tc=await(await pdf.getPage(p)).getTextContent();
+    const items=tc.items.filter(i=>typeof i.str==='string').map(i=>({s:i.str,x:i.transform[4],y:i.transform[5],w:i.width||0}));
+    lines.push(...groupItems(items));
+  }
+  return lines;
+}
+async function handleFile(f){
+  if(!f)return;
+  if(!/pdf$/i.test(f.name)&&f.type!=='application/pdf'){setMsg('File harus berformat PDF.','err');return}
+  $('#cfg').hidden=true;setMsg('⏳ Membaca PDF…');
+  try{
+    const lines=await extractLines(f);
+    const r=parseLines(lines);
+    if(!r.questions.length){
+      setMsg(`Tidak ada soal yang terbaca. Format PDF harus memuat blok "Soal N", pilihan "A. …", dan baris "Jawaban benar: X".<details><summary>Lihat teks hasil ekstraksi</summary><textarea readonly>${esc(lines.join('\n'))}</textarea></details>`,'err');
+      return;
+    }
+    pending={Q:r.questions,name:f.name};
+    setMsg(r.warnings.length?`⚠️ ${r.warnings.length} peringatan:<br>${r.warnings.map(esc).join('<br>')}<details><summary>Lihat teks hasil ekstraksi</summary><textarea readonly>${esc(lines.join('\n'))}</textarea></details>`:'','warn');
+    renderCfg();
+  }catch(e){setMsg('Gagal membaca PDF: '+esc(e.message||e),'err')}
+}
+const fileIn=$('#file'),drop=$('#drop');
+fileIn.onchange=()=>handleFile(fileIn.files[0]);
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]));
+drop.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fileIn.click()}});
+
+function renderCfg(){
+  const qs=pending.Q,secs={};
+  qs.forEach(q=>{(secs[q.sec]=secs[q.sec]||{name:q.secName||('Section '+q.sec),c:0}).c++});
+  const hasId=qs.some(q=>q.id),multi=qs.filter(q=>q.answer.length>1).length;
+  $('#cfg').hidden=false;
+  $('#cfg').innerHTML=`
+   <h3 style="margin-top:0">✅ ${qs.length} soal terbaca <small style="color:var(--muted);font-weight:400">· ${esc(pending.name)}</small></h3>
+   <div class="chips">${Object.entries(secs).map(([k,v])=>`<span class="chip"><i class="dot s${k}" style="display:inline-block;margin-right:6px"></i>${esc(v.name)}: ${v.c}</span>`).join('')}${multi?`<span class="chip">Pilih dua: ${multi}</span>`:''}</div>
+   <b>Mode</b>
+   <div class="opts-row">
+     <label class="choice"><input type="radio" name="mode" value="exam" checked><div><b>Ujian</b><small>Jawaban &amp; pembahasan baru muncul setelah “Kumpulkan”. Paling mirip ujian asli.</small></div></label>
+     <label class="choice"><input type="radio" name="mode" value="practice"><div><b>Latihan</b><small>Langsung tahu benar/salah + pembahasan setiap selesai menjawab, skor berjalan.</small></div></label>
+   </div>
+   ${hasId?`<b>Bahasa soal</b>
+   <div class="opts-row" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
+     <label class="choice"><input type="radio" name="lang" value="en" checked><div>English</div></label>
+     <label class="choice"><input type="radio" name="lang" value="id"><div>Indonesia</div></label>
+     <label class="choice"><input type="radio" name="lang" value="both"><div>Keduanya</div></label>
+   </div>`:''}
+   <label class="row" style="margin:6px 0 16px"><input type="checkbox" id="autoNext"> Otomatis lanjut ke soal berikutnya setelah menjawab</label>
+   <button class="btn primary" id="startBtn" style="width:100%;padding:12px">Mulai kuis →</button>`;
+  $('#startBtn').onclick=()=>{
+    const g=n=>(document.querySelector(`input[name=${n}]:checked`)||{}).value;
+    Q=pending.Q;
+    S={mode:g('mode')||'exam',lang:g('lang')||'en',autoNext:$('#autoNext').checked,ans:{},flag:{},checked:{},cur:0,filter:'all',submitted:false,elapsed:0,name:pending.name};
+    save();openQuiz();
+  };
+}
+function renderResume(){
+  const j=loadSaved(),el=$('#resume');
+  if(!j){el.hidden=true;return}
+  const ans=j.Q.filter(q=>(j.S.ans[q.n]||[]).length===q.answer.length).length;
+  el.hidden=false;
+  el.innerHTML=`<b>Sesi tersimpan</b><div style="color:var(--muted);margin:4px 0 12px">${esc(j.S.name||'PDF')} · ${j.Q.length} soal · ${ans} dijawab · mode ${j.S.mode==='exam'?'Ujian':'Latihan'}${j.S.submitted?' · sudah dikumpulkan':''}</div>
+   <div class="row"><button class="btn primary" id="resBtn">Lanjutkan</button><button class="btn ghost" id="delBtn">Hapus sesi</button></div>`;
+  $('#resBtn').onclick=()=>{Q=j.Q;S=j.S;S.filter='all';j.S.submitted?openResult():openQuiz()};
+  $('#delBtn').onclick=()=>{clearSaved();renderResume()};
+}
+
+/* ---------- logic ---------- */
+const need=q=>q.answer.length;
+const sel=q=>S.ans[q.n]||[];
+const answered=q=>sel(q).length===need(q);
+const isCorrect=q=>{const a=sel(q);return a.length===q.answer.length&&a.every((x,i)=>x===q.answer[i])};
+const isLocked=q=>S.submitted||(S.mode==='practice'&&!!S.checked[q.n]);
+function score(){const ok=Q.filter(isCorrect).length,un=Q.filter(q=>!answered(q)).length;return{ok,un,wrong:Q.length-ok-un,pct:Math.round(ok/Q.length*1000)/10}}
+function passFilter(q){
+  switch(S.filter){case'un':return!answered(q);case'flag':return!!S.flag[q.n];case'wrong':return isLocked(q)&&!isCorrect(q);default:return true}
+}
+function visibleIdx(){return Q.map((_,i)=>i).filter(i=>passFilter(Q[i]))}
+
+function openQuiz(){show('quiz');try{$('#sQuiz').classList.toggle('collapsed',localStorage.getItem('adp_side_collapsed')==='1')}catch(e){}renderAll();$('#side').classList.remove('open');$('#scrim').classList.remove('show')}
+function go(i){S.cur=Math.max(0,Math.min(Q.length-1,i));save();renderAll();window.scrollTo(0,0);closeSide()}
+function step(d){
+  const v=visibleIdx();
+  if(!v.length){go(S.cur+d);return}
+  const c=d>0?v.find(i=>i>S.cur):[...v].reverse().find(i=>i<S.cur);
+  if(c!==undefined)go(c);
+}
+function choose(k){
+  const q=Q[S.cur];if(isLocked(q)||!(k in q.en.opts))return;
+  let a=sel(q).slice();
+  if(need(q)===1){a=(S.mode==='exam'&&a[0]===k)?[]:[k]}
+  else{const i=a.indexOf(k);if(i>=0)a.splice(i,1);else{a.push(k);if(a.length>need(q))a.shift()}}
+  a.sort();S.ans[q.n]=a;
+  if(S.mode==='practice'&&a.length===need(q))S.checked[q.n]=true;
+  save();renderAll();
+  if(S.autoNext&&S.mode==='exam'&&a.length===need(q)&&S.cur<Q.length-1)setTimeout(()=>{if(S.cur===Q.indexOf(q))go(S.cur+1)},260);
+}
+function toggleFlag(){const q=Q[S.cur];S.flag[q.n]=!S.flag[q.n];if(!S.flag[q.n])delete S.flag[q.n];save();renderAll()}
+
+/* ---------- render quiz ---------- */
+function renderAll(){renderTop();renderSide();renderQuestion()}
+function renderTop(){
+  const tot=Q.length,done=Q.filter(answered).length;
+  $('#prog').style.width=(done/tot*100)+'%';
+  $('#progTxt').textContent=`${done}/${tot} dijawab`;
+  $('#timer').textContent=fmtTime(S.elapsed);
+  const ls=$('#liveScore');
+  if(S.submitted){ls.hidden=false;ls.textContent='Skor '+score().pct+'%'}
+  else if(S.mode==='practice'){
+    const ck=Q.filter(q=>S.checked[q.n]),ok=ck.filter(isCorrect).length;
+    ls.hidden=false;ls.textContent=`Skor ${ok}/${ck.length}`+(ck.length?` (${Math.round(ok/ck.length*100)}%)`:'');
+  }else ls.hidden=true;
+  const hasId=Q.some(q=>q.id);
+  $('#langSeg').hidden=!hasId;
+  $('#langSeg').innerHTML=[['en','EN'],['id','ID'],['both','EN+ID']].map(([v,l])=>`<button data-l="${v}" class="${S.lang===v?'on':''}">${l}</button>`).join('');
+  $('#submitBtn').textContent=S.submitted?'Lihat hasil':'Kumpulkan';
+}
+function navClass(q,i){
+  let c='nb';
+  if(isLocked(q)){c+=answered(q)?(isCorrect(q)?' ok':' bad'):(S.submitted?' bad':'')}
+  else if(answered(q))c+=' ans';
+  if(i===S.cur)c+=' cur';
+  if(S.flag[q.n])c+=' fl';
+  return c;
+}
+function renderSide(){
+  const done=Q.filter(answered).length,flags=Q.filter(q=>S.flag[q.n]).length;
+  const wrongN=Q.filter(q=>isLocked(q)&&!isCorrect(q)).length;
+  const fl=[['all','Semua'],['un',`Belum (${Q.length-done})`],['flag',`Ditandai (${flags})`]];
+  if(S.submitted||S.mode==='practice')fl.push(['wrong',`Salah (${wrongN})`]);
+  const groups={};
+  Q.forEach((q,i)=>{(groups[q.sec]=groups[q.sec]||{name:q.secName||'Section '+q.sec,items:[]}).items.push(i)});
+  let html=`<h3>Navigasi Soal</h3>
+   <div class="stats"><span>✅ Dijawab ${done}</span><span>⬜ Belum ${Q.length-done}</span><span>🚩 ${flags}</span></div>
+   <div class="filters">${fl.map(([v,l])=>`<button data-f="${v}" class="${S.filter===v?'on':''}">${l}</button>`).join('')}</div>`;
+  for(const [sec,g] of Object.entries(groups)){
+    const vis=g.items.filter(i=>passFilter(Q[i]));
+    if(!vis.length)continue;
+    const d=g.items.filter(i=>answered(Q[i])).length;
+    html+=`<div class="gh"><i class="dot s${sec}"></i>${esc(g.name)}<small>${d}/${g.items.length}</small></div><div class="grid">${vis.map(i=>`<button class="${navClass(Q[i],i)}" data-i="${i}">${Q[i].n}</button>`).join('')}</div>`;
+  }
+  if(!Object.keys(groups).some(s=>groups[s].items.some(i=>passFilter(Q[i]))))html+=`<p style="color:var(--muted)">Tidak ada soal untuk filter ini 🎉</p>`;
+  html+=`<div class="legend"><span><i style="background:var(--primary-bg);border-color:var(--primary)"></i>dijawab</span><span><i></i>belum</span><span><i style="background:var(--warn)"></i>ditandai</span>${(S.submitted||S.mode==='practice')?`<span><i style="background:var(--ok-bg);border-color:var(--ok)"></i>benar</span><span><i style="background:var(--bad-bg);border-color:var(--bad)"></i>salah</span>`:''}</div>`;
+  const keep=$('#side').scrollTop;$('#side').innerHTML=html;$('#side').scrollTop=keep;
+}
+const CODE_RE=/^(bq |gcloud |SELECT |CREATE |measure:|dimension:|LAG\(|LEAD\(|FIRST_VALUE|SUM\(|ML\.|CAST|SAFE_CAST|PARSE_DATE|MODEL_|roles\/|\(\d\))/;
+function optText(t){return`<span class="${CODE_RE.test(t)?'mono':''}">${esc(t)}</span>`}
+function renderQuestion(){
+  const q=Q[S.cur],a=sel(q),fb=isLocked(q),lang=(S.lang!=='en'&&!q.id)?'en':S.lang;
+  const multi=need(q)>1;
+  let h=`<div class="qhead"><b>Soal ${q.n}</b><span>dari ${Q.length}</span><span class="dot s${q.sec}"></span><span>${esc(q.secName)}</span>${multi?`<span class="tag">Pilih ${need(q)}</span>`:''}${S.flag[q.n]?'<span class="tag">🚩 Ditandai</span>':''}</div>`;
+  if(lang==='id')h+=`<div class="stem">${esc(q.id.stem)}</div>`;
+  else{h+=`<div class="stem">${esc(q.en.stem)}</div>`;if(lang==='both')h+=`<div class="stem2">${esc(q.id.stem)}</div>`}
+  h+=Object.keys(q.en.opts).sort().map(k=>{
+    let c='opt';
+    if(fb){if(q.answer.includes(k))c+=a.includes(k)?' right':' right missed';else if(a.includes(k))c+=' wrong'}
+    else if(a.includes(k))c+=' sel';
+    const main=lang==='id'?(q.id.opts[k]||q.en.opts[k]):q.en.opts[k];
+    const sub=lang==='both'&&q.id&&q.id.opts[k]?`<span class="t2">${optText(q.id.opts[k])}</span>`:'';
+    return`<button class="${c}" data-k="${k}" ${fb?'disabled':''}><span class="k">${k}</span><span>${optText(main)}${sub}</span></button>`;
+  }).join('');
+  if(fb){
+    const ok=isCorrect(q),ans=q.answer.join(', ');
+    h+=`<div class="banner ${ok?'ok':'bad'}">${ok?'✔ Benar':(answered(q)?'✘ Salah':'⚠ Belum dijawab')} — jawaban benar: ${ans}</div>`;
+    if(q.ex.correct)h+=`<div class="why ok"><b>Kenapa benar:</b> ${esc(q.ex.correct)}</div>`;
+    for(const k of Object.keys(q.ex.wrong).sort())h+=`<div class="why bad ${a.includes(k)?'picked':''}"><b>${k} salah:</b> ${esc(q.ex.wrong[k])}</div>`;
+  }else if(S.mode==='practice'&&multi&&a.length<need(q)){
+    h+=`<div style="color:var(--muted);font-size:13.5px">Pilih ${need(q)} jawaban (terpilih ${a.length}).</div>`;
+  }
+  h+=`<div class="nav"><button class="btn" id="prevBtn" ${S.cur===0?'disabled':''}>← Sebelumnya</button>
+   <button class="btn ghost" id="flagBtn">${S.flag[q.n]?'🚩 Lepas tanda':'🏳️ Tandai'}</button><span class="sp"></span>
+   ${S.cur===Q.length-1?`<button class="btn primary" id="lastBtn">${S.submitted?'Lihat hasil':'Kumpulkan'}</button>`:`<button class="btn primary" id="nextBtn">Berikutnya →</button>`}</div>
+   <p style="color:var(--muted);font-size:12.5px;margin-top:18px">Pintasan: A–E pilih jawaban · ← → pindah soal · F tandai</p>`;
+  $('#main').innerHTML=h;
+}
+
+/* events */
+$('#main').addEventListener('click',e=>{
+  const o=e.target.closest('.opt');if(o){choose(o.dataset.k);return}
+  const id=e.target.closest('button')?.id;
+  if(id==='prevBtn')step(-1);else if(id==='nextBtn')step(1);else if(id==='flagBtn')toggleFlag();else if(id==='lastBtn')trySubmit();
+});
+$('#side').addEventListener('click',e=>{
+  const b=e.target.closest('.nb');if(b){go(+b.dataset.i);return}
+  const f=e.target.closest('[data-f]');if(f){S.filter=f.dataset.f;save();renderSide()}
+});
+$('#langSeg').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(b){S.lang=b.dataset.l;save();renderAll()}});
+$('#submitBtn').onclick=trySubmit;
+function closeSide(){$('#side').classList.remove('open');$('#scrim').classList.remove('show')}
+$('#menuBtn').onclick=()=>{
+  if(matchMedia('(max-width:900px)').matches){const o=$('#side').classList.toggle('open');$('#scrim').classList.toggle('show',o)}
+  else{const c=$('#sQuiz').classList.toggle('collapsed');try{localStorage.setItem('adp_side_collapsed',c?'1':'0')}catch(e){}}
+};
+$('#scrim').onclick=closeSide;
+document.addEventListener('keydown',e=>{
+  if(screen!=='quiz'||$('#dlg').open||e.ctrlKey||e.metaKey||e.altKey||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;
+  const k=e.key.toLowerCase();
+  if(/^[a-e]$/.test(k))choose(k.toUpperCase());
+  else if(e.key==='ArrowRight')step(1);else if(e.key==='ArrowLeft')step(-1);else if(k==='f')toggleFlag();
+});
+setInterval(()=>{
+  if(screen==='quiz'&&S&&!S.submitted&&!document.hidden){S.elapsed++;$('#timer').textContent=fmtTime(S.elapsed);if(S.elapsed%15===0)save()}
+},1000);
+
+/* dialog */
+function confirmDlg(html,okTxt,cb){$('#dlgBody').innerHTML=html;$('#dlgOk').textContent=okTxt;dlgCb=cb;$('#dlg').showModal()}
+$('#dlgCancel').onclick=()=>$('#dlg').close();
+$('#dlgOk').onclick=()=>{$('#dlg').close();dlgCb&&dlgCb()};
+
+/* submit & result */
+function trySubmit(){
+  if(S.submitted){openResult();return}
+  const un=Q.filter(q=>!answered(q));
+  confirmDlg(un.length
+    ?`<h3 style="margin-top:0">Kumpulkan sekarang?</h3><p>Masih ada <b>${un.length}</b> soal belum dijawab:<br><span style="color:var(--muted)">${un.slice(0,40).map(q=>q.n).join(', ')}${un.length>40?'…':''}</span></p><p>Soal kosong dihitung salah.</p>`
+    :`<h3 style="margin-top:0">Kumpulkan jawaban?</h3><p>Semua ${Q.length} soal sudah dijawab. Setelah dikumpulkan jawaban tidak bisa diubah.</p>`,
+    'Kumpulkan',()=>{S.submitted=true;S.filter='all';save();openResult()});
+}
+function secStats(){
+  const m={};
+  Q.forEach(q=>{const s=m[q.sec]=m[q.sec]||{name:q.secName||'Section '+q.sec,t:0,ok:0};s.t++;if(isCorrect(q))s.ok++});
+  return Object.entries(m).map(([k,v])=>({sec:k,...v,pct:v.ok/v.t*100}));
+}
+function openResult(){
+  show('result');
+  const sc=score(),secs=secStats();
+  const C=2*Math.PI*54,col=sc.pct>=85?'var(--ok)':sc.pct>=70?'var(--warn)':'var(--bad)';
+  const weak=[...secs].sort((a,b)=>a.pct-b.pct)[0];
+  const verdict=sc.pct>=85?'Sudah di atas target 85%. Pertahankan, lalu coba soal yang belum pernah kamu lihat.':sc.pct>=70?'Hampir sampai. Fokus ulang pada domain terlemah di bawah.':'Materi masih perlu diperkuat. Baca pembahasan soal yang salah, lalu ulangi.';
+  $('#sResult').innerHTML=`
+   <div class="card" style="text-align:center">
+    <h2 style="margin:0 0 14px">Hasil Latihan</h2>
+    <div class="ring"><svg width="170" height="170" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="var(--line)" stroke-width="10"/><circle cx="60" cy="60" r="54" fill="none" stroke="${col}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-sc.pct/100)}"/></svg>
+     <div class="num"><div>${sc.pct}%<small>${sc.ok} / ${Q.length} benar</small></div></div></div>
+    <p style="margin:14px 0 0;color:var(--muted)">${verdict}</p>
+    <div class="kpis"><div class="kpi"><b style="color:var(--ok)">${sc.ok}</b><span>Benar</span></div><div class="kpi"><b style="color:var(--bad)">${sc.wrong}</b><span>Salah</span></div><div class="kpi"><b>${sc.un}</b><span>Kosong</span></div><div class="kpi"><b>${fmtTime(S.elapsed)}</b><span>Waktu</span></div></div>
+   </div>
+   <div class="card"><h3 style="margin-top:0">Skor per domain</h3>
+    ${secs.map(s=>`<div class="dom"><div class="l"><span><i class="dot s${s.sec}" style="display:inline-block;margin-right:6px"></i>${esc(s.name)}</span><b>${s.ok}/${s.t} · ${Math.round(s.pct)}%</b></div><div class="bar"><i style="width:${s.pct}%;background:var(--s${s.sec})"></i></div></div>`).join('')}
+    ${secs.length>1&&weak.pct<100?`<p style="color:var(--muted);margin-bottom:0">Domain terlemah: <b>${esc(weak.name)}</b></p>`:''}
+   </div>
+   <div class="row" style="justify-content:center">
+    <button class="btn primary" id="rvAll">Tinjau semua jawaban</button>
+    <button class="btn" id="rvWrong" ${sc.ok===Q.length?'disabled':''}>Tinjau yang salah</button>
+    <button class="btn" id="retry">Ulangi dari awal</button>
+    <button class="btn ghost" id="newPdf">Upload PDF lain</button>
+   </div>`;
+  $('#rvAll').onclick=()=>{S.filter='all';S.cur=0;save();openQuiz()};
+  $('#rvWrong').onclick=()=>{S.filter='wrong';const i=Q.findIndex(q=>!isCorrect(q));S.cur=Math.max(0,i);save();openQuiz()};
+  $('#retry').onclick=()=>confirmDlg('<h3 style="margin-top:0">Ulangi dari awal?</h3><p>Semua jawaban dan waktu akan direset.</p>','Ulangi',()=>{
+    Object.assign(S,{ans:{},flag:{},checked:{},submitted:false,elapsed:0,cur:0,filter:'all'});save();openQuiz()});
+  $('#newPdf').onclick=()=>{pending=null;$('#cfg').hidden=true;setMsg('');fileIn.value='';renderResume();show('start')};
+}
+
+/* ---------- Daftar PDF otomatis (tanpa upload) ---------- */
+const LIB={items:[],mode:null,saved:null};
+const natSort=(a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:'base'});
+function idb(){return new Promise((res,rej)=>{const r=indexedDB.open('adp_quiz_fs',1);r.onupgradeneeded=()=>r.result.createObjectStore('h');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function idbGet(k){try{const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction('h').objectStore('h').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}catch(e){return null}}
+async function idbSet(k,v){try{const d=await idb();await new Promise((res,rej)=>{const t=d.transaction('h','readwrite');t.objectStore('h').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){}}
+
+// Mode A: halaman dibuka lewat web server (http/https). Baca soal.json atau directory listing.
+async function listFromHttp(){
+  if(!/^(https?|file):$/.test(location.protocol))return[];
+  const names=new Set();
+  try{
+    const r=await fetch('soal.json',{cache:'no-store'});
+    if(r.ok){const j=await r.json();(Array.isArray(j)?j:(j.files||[])).forEach(n=>{if(typeof n==='string')names.add(n)})}
+  }catch(e){}
+  try{
+    const r=await fetch('./',{cache:'no-store'});
+    if(r.ok&&(location.protocol==='file:'||/html/i.test(r.headers.get('content-type')||''))){
+      const txt=await r.text();
+      const un=t=>t.replace(/\\x([0-9a-f]{2})/gi,(_,h)=>String.fromCharCode(parseInt(h,16))).replace(/\\(.)/g,'$1');
+      for(const m of txt.matchAll(/addRow\("((?:[^"\\]|\\.)*)","(?:[^"\\]|\\.)*",(\d)/g))if(m[2]==='0')names.add(un(m[1]));
+      const doc=new DOMParser().parseFromString(txt,'text/html');
+      doc.querySelectorAll('a[href]').forEach(a=>{
+        const h=a.getAttribute('href').split(/[?#]/)[0];
+        if(/\.pdf$/i.test(h)&&!/^([a-z]+:|\/|\.\.)/i.test(h)){try{names.add(decodeURIComponent(h))}catch(e){}}
+      });
+    }
+  }catch(e){}
+  return[...names].filter(n=>/\.pdf$/i.test(n)&&!n.includes('/')).map(name=>({name,get:async()=>{
+    const r=await fetch('./'+encodeURIComponent(name));
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return new File([await r.blob()],name,{type:'application/pdf'});
+  }})).sort(natSort);
+}
+
+// Mode B: dibuka langsung (file://). Pilih folder sekali, handle disimpan di IndexedDB.
+async function listFromDir(dir){
+  const out=[];
+  for await(const [name,h] of dir.entries()){if(h.kind==='file'&&/\.pdf$/i.test(name))out.push({name,get:()=>h.getFile()})}
+  return out.sort(natSort);
+}
+async function useDir(h){LIB.items=await listFromDir(h);LIB.mode='folder';LIB.saved=h}
+async function pickDir(){
+  if(!window.showDirectoryPicker){$('#dirIn').click();return}
+  try{const h=await showDirectoryPicker({id:'adp-quiz',mode:'read'});await idbSet('dir',h);await useDir(h)}
+  catch(e){if(e.name!=='AbortError')setMsg('Gagal membuka folder: '+esc(e.message||e),'err')}
+  renderLib();
+}
+async function grantDir(){
+  try{
+    if(await LIB.saved.requestPermission({mode:'read'})==='granted')await useDir(LIB.saved);
+    else setMsg('Akses folder tidak diizinkan.','err');
+  }catch(e){setMsg('Gagal mengakses folder: '+esc(e.message||e),'err')}
+  renderLib();
+}
+async function initLib(){
+  LIB.items=[];LIB.mode=null;
+  if(Array.isArray(window.SOAL_DATA)&&window.SOAL_DATA.length){
+    LIB.items=window.SOAL_DATA.map(d=>({name:d.name,get:async()=>{const b=atob(d.b64),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return new File([u],d.name,{type:'application/pdf'})}})).sort(natSort);
+    LIB.mode='data';renderLib();return;
+  }
+  LIB.items=await listFromHttp();
+  if(LIB.items.length)LIB.mode='http';
+  else if(window.showDirectoryPicker){
+    LIB.saved=LIB.saved||await idbGet('dir');
+    try{if(LIB.saved&&await LIB.saved.queryPermission({mode:'read'})==='granted')await useDir(LIB.saved)}catch(e){}
+  }
+  renderLib();
+}
+function renderLib(){
+  const el=$('#lib'),canDir=!!window.showDirectoryPicker;
+  let h;
+  if(LIB.mode){
+    const n=LIB.items.length;
+    h=`<div class="row" style="justify-content:space-between"><b>📚 Soal di folder ini <small class="muted" style="font-weight:400">· ${n} PDF</small></b>
+      <span class="row" style="gap:4px"><button class="btn ghost" data-act="rescan">↻ Muat ulang</button>${LIB.mode==='folder'?'<button class="btn ghost" data-act="pick">Ganti folder</button>':''}</span></div>
+      ${n?`<div class="lib">${LIB.items.map((it,i)=>`<button class="libit" data-pdf="${i}"><span>📄</span><span class="nm">${esc(it.name)}</span><span class="go">Buka →</span></button>`).join('')}</div>`:'<p class="muted" style="margin:10px 0 0">Tidak ada file PDF di folder ini.</p>'}`;
+  }else if(LIB.saved){
+    h=`<b>📂 Folder soal: ${esc(LIB.saved.name)}</b><p class="muted" style="margin:6px 0 12px">Browser butuh izin sekali lagi untuk membaca folder ini.</p>
+      <div class="row"><button class="btn primary" data-act="grant">Izinkan &amp; tampilkan daftar</button><button class="btn ghost" data-act="pick">Pilih folder lain</button></div>`;
+  }else if(canDir||location.protocol==='file:'){
+    h=`<b>📂 Ambil soal dari folder</b><p class="muted" style="margin:6px 0 12px">Pilih folder tempat file PDF-mu berada, lalu semua PDF muncul sebagai daftar tanpa upload satu per satu. ${canDir?'Cukup sekali, folder diingat browser.':'Browser ini akan bertanya soal “upload”, tapi tidak ada file yang dikirim ke mana pun. Folder perlu dipilih lagi setiap halaman dibuka.'}</p>
+      <button class="btn primary" data-act="pick">Pilih folder</button>
+      <details style="margin-top:14px"><summary>Mau langsung otomatis tanpa klik?</summary>
+      <p style="margin:8px 0 0">Klik kanan shortcut Chrome → <b>Properties</b> → di kolom <b>Target</b>, tambahkan di paling akhir (pakai spasi): <code>--allow-file-access-from-files</code>. Tutup semua jendela Chrome, buka lewat shortcut itu, lalu buka file ini: daftar PDF muncul sendiri. Pakai shortcut ini khusus untuk latihan, bukan untuk browsing umum.</p></details>
+      <details style="margin-top:10px"><summary>Admin: kemas PDF agar terdaftar otomatis untuk semua pengguna</summary>
+      <p style="margin:8px 0">Pilih semua PDF soal satu kali, unduh <code>soal-data.js</code>, taruh sefolder dengan file ini. Setelah itu siapa pun yang membuka halaman ini langsung melihat daftar soal, tanpa upload dan tanpa pilih folder.</p>
+      <input type="file" id="packIn" accept="application/pdf,.pdf" multiple></details>`;
+  }else{
+    h=`<b>📂 Daftar PDF otomatis</b><p class="muted" style="margin:6px 0 0">Tidak ada file PDF yang terdeteksi di folder ini.</p>`;
+  }
+  el.hidden=false;el.innerHTML=h;
+}
+$('#lib').addEventListener('click',async e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.pdf!==undefined){
+    const it=LIB.items[+b.dataset.pdf];pending=null;
+    try{setMsg('⏳ Membuka '+esc(it.name)+'…');await handleFile(await it.get());if(pending)$('#cfg').scrollIntoView({behavior:'smooth',block:'nearest'})}
+    catch(err){setMsg('Gagal membuka file: '+esc(err.message||err),'err')}
+  }else if(b.dataset.act==='pick')pickDir();
+  else if(b.dataset.act==='grant')grantDir();
+  else if(b.dataset.act==='rescan')initLib();
+});
+
+$('#lib').addEventListener('change',async e=>{
+  if(e.target.id!=='packIn')return;
+  const fs=[...e.target.files];if(!fs.length)return;
+  try{
+    setMsg('⏳ Mengemas '+fs.length+' PDF…');
+    const data=[];
+    for(const f of fs){
+      const u=new Uint8Array(await f.arrayBuffer());let b='';
+      for(let i=0;i<u.length;i+=32768)b+=String.fromCharCode.apply(null,u.subarray(i,i+32768));
+      data.push({name:f.name,b64:btoa(b)});
+    }
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob(['window.SOAL_DATA='+JSON.stringify(data)+';'],{type:'text/javascript'}));
+    a.download='soal-data.js';a.click();
+    setMsg('✅ <b>soal-data.js</b> terunduh. Taruh sefolder dengan file ini, lalu muat ulang halaman.');
+  }catch(err){setMsg('Gagal mengemas: '+esc(err.message||err),'err')}
+});
+$('#dirIn').addEventListener('change',e=>{
+  const fs=[...e.target.files].filter(f=>/\.pdf$/i.test(f.name)&&(f.webkitRelativePath||'').split('/').length===2);
+  LIB.items=fs.map(f=>({name:f.name,get:async()=>f})).sort(natSort);
+  LIB.mode='folder';LIB.saved=null;e.target.value='';renderLib();
+});
+
+/* init */
+renderResume();show('start');initLib();
+</script>
+</body>
+</html>

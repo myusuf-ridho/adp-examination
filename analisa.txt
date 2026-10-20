@@ -1,0 +1,22 @@
+B,s,s,b,s = benar 2 soal
+
+b,s,s,s,b = 2 soal benar
+b,b,s,b,b = 4 soal benar
+b,s,s,s,b = 2 soal benar
+
+B :10/20
+
+B,B,b,b,s = 4
+s,b,s,b,b = 3
+b,b,b,b,b = 5
+b,b,b,b,s = 4
+
+B :16/20
+
+b,b,b,b,b = 5
+b,b,s,b,b = 4
+b,b,b,b,b = 5
+s,b,b,b,b = 4 fahami high availability
+
+B :18/20
+Total : 44 - 73%
