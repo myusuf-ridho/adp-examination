@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>ADP Quiz – Latihan Soal dari PDF</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="top">
+  <button class="icon" id="menuBtn" hidden aria-label="Tampilkan/sembunyikan daftar nomor" title="Tampilkan/sembunyikan daftar nomor">☰</button>
+  <div class="brand">🎯 ADP Quiz<span class="sub"> · Associate Data Practitioner</span></div>
+  <div class="quizbar" id="quizBar" hidden>
+    <div class="progwrap"><div class="prog"><i id="prog"></i></div><span id="progTxt"></span></div>
+    <span class="pill" id="timer">00:00</span>
+    <span class="pill ok" id="liveScore" hidden></span>
+    <div class="seg" id="langSeg"></div>
+    <button class="btn primary" id="submitBtn">Kumpulkan</button>
+  </div>
+  <button class="icon" id="themeBtn" title="Mode gelap / terang" style="margin-left:auto">🌙</button>
+</header>
+
+<!-- START -->
+<section id="sStart" class="center">
+  <div class="hero">
+    <h1>Latihan Soal dari PDF</h1>
+    <p>Pilih PDF soal dari folder yang sama dengan file ini, atau upload manual (format buku latihan ADP). Soal, pilihan, kunci, dan pembahasan dibaca otomatis jadi kuis interaktif. Semua diproses di browser-mu, file tidak dikirim ke server mana pun.</p>
+  </div>
+  <div id="resume" class="card" hidden></div>
+  <div id="lib" class="card" hidden></div>
+  <input type="file" id="dirIn" webkitdirectory hidden>
+  <label id="drop" class="drop" tabindex="0">
+    <input type="file" id="file" accept="application/pdf,.pdf" hidden>
+    <div class="big">📄</div><b>Tarik &amp; lepas PDF di sini</b><span>atau klik untuk memilih file</span>
+  </label>
+  <div id="parseMsg" class="msg" hidden></div>
+  <div id="cfg" class="card" hidden></div>
+</section>
+
+<!-- QUIZ -->
+<div id="sQuiz" class="app" hidden>
+  <aside id="side"></aside>
+  <div class="scrim" id="scrim"></div>
+  <main class="q" id="main"></main>
+</div>
+
+<!-- RESULT -->
+<section id="sResult" class="center" hidden></section>
+
+<dialog id="dlg">
+  <div id="dlgBody"></div>
+  <div class="row" style="justify-content:flex-end;margin-top:16px">
+    <button class="btn ghost" id="dlgCancel">Kembali</button>
+    <button class="btn primary" id="dlgOk">OK</button>
+  </div>
+</dialog>
+
+<script src="./soal-data.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
